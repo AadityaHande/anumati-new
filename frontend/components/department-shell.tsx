@@ -6,9 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Brand } from "./brand";
 import { apiClient, logout, platformClient } from "../lib/api";
 import {
-  AlertTriangle, ArrowLeft, Bell, Calendar, ClipboardCheck, FileText,
-  Landmark, LogOut, Menu, MessageSquare, PanelLeftClose, PanelLeftOpen,
-  Shield, X
+  ArrowLeft, Bell, Calendar, ClipboardCheck, Landmark, LogOut, Menu,
+  MessageSquare, PanelLeftClose, PanelLeftOpen, Shield, X
 } from "./icons";
 
 const links = [
@@ -34,13 +33,15 @@ export function DepartmentShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [ready, setReady] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     setCollapsed(localStorage.getItem("anumati_department_sidebar_collapsed") === "1");
     Promise.all([apiClient.verifySession(), platformClient.unreadNotifications()])
       .then(([session, unread]) => {
         const officer = session.roles.includes("DEPARTMENT_OFFICER") || session.roles.includes("ADMIN");
-        if (!officer) router.replace("/app");
+        if (!officer) { router.replace("/app"); return; }
+        setIsAdmin(session.roles.includes("ADMIN"));
         setNotificationCount(unread);
         setReady(true);
       })
@@ -101,10 +102,10 @@ export function DepartmentShell({ children }: { children: React.ReactNode }) {
               </Link>
             );
           })}
-          <span className="department-nav-label department-nav-label-secondary">Connected workspace</span>
-          <Link href="/app" className="department-nav-item" title={collapsed ? "Applicant workspace" : undefined}>
-            <FileText size={18} /><span>Applicant workspace</span>
-          </Link>
+          <span className="department-nav-label department-nav-label-secondary">Workspace</span>
+          {isAdmin ? <Link href="/admin" className="department-nav-item" title={collapsed ? "Administration" : undefined}>
+            <Shield size={18} /><span>Administration</span>
+          </Link> : null}
           <Link href="/app/notifications" className="department-nav-item" title={collapsed ? "Notifications" : undefined}>
             <Bell size={18} /><span>Notifications</span>{notificationCount > 0 ? <em>{notificationCount}</em> : null}
           </Link>
@@ -128,7 +129,7 @@ export function DepartmentShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="department-topbar-right">
             <Link href="/app/notifications" className="department-bell" aria-label="Notifications"><Bell size={17}/>{notificationCount > 0 ? <span>{notificationCount}</span> : null}</Link>
-            <Link href="/app" className="department-app-switch"><span className="department-app-switch-dot"/> Applicant view</Link>
+            {isAdmin ? <Link href="/admin" className="department-app-switch"><span className="department-app-switch-dot"/> Administration</Link> : <span className="department-app-switch department-app-switch-static"><span className="department-app-switch-dot"/> Department workspace</span>}
           </div>
         </header>
         {children}

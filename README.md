@@ -197,3 +197,7 @@ Do not create Anumati tables manually. Flyway creates and upgrades the schema wh
 - Document upload fails → confirm the local backend launcher sets `ANUMATI_STORAGE_MODE=local`.
 
 For the judging flow, use `Reference Manufacturing Unit` and `demo/REFERENCE-MANUFACTURING-PROCESS.docx`.
+
+## Local role entry points
+
+After sign-in, the frontend routes by the authenticated roles returned by the backend session: applicant accounts open the applicant workspace, department officers open the control tower, and admin accounts open the administration workspace.

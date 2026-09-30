@@ -1,0 +1,14 @@
+ANUMATI V18
+
+Applicant application-route fix:
+- Added /app/applications/[id] under the applicant AppShell.
+- Added /app/applications/[id]/evidence-graph under the applicant AppShell.
+- Existing applicant links already point to /app/applications/... and now resolve inside the correct workspace shell.
+- The original /applications/... routes are retained for compatibility.
+
+Typecheck source from V17 was already clean before this route fix.
+Production build should be verified locally with:
+  cd frontend
+  npm install
+  npm run typecheck
+  npm run build

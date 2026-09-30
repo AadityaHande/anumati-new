@@ -18,9 +18,15 @@ export default function LoginPage() {
     setError("");
     setBusy(true);
     try {
-      await login(username.trim(), password);
+      const session = await login(username.trim(), password);
       setPassword("");
-      router.replace("/app");
+      if (session.roles.includes("ADMIN")) {
+        router.replace("/admin");
+      } else if (session.roles.includes("DEPARTMENT_OFFICER")) {
+        router.replace("/officer");
+      } else {
+        router.replace("/app");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "The credentials could not be verified.");
     } finally {

@@ -6,9 +6,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Brand } from "./brand";
 import { apiClient, platformClient, logout, BusinessProfile } from "../lib/api";
 import {
-  Bell, Calendar, ClipboardCheck, Database, FileText, GitBranch, Landmark,
-  Layers, MessageSquare, Network, Scale, Shield, Clock, LogOut, ArrowLeft,
-  ChevronDown, PanelLeftClose, PanelLeftOpen
+  Bell, ClipboardCheck, Database, FileText, GitBranch,
+  Layers, Network, Scale, Shield, LogOut, ArrowLeft,
+  ChevronDown, PanelLeftClose, PanelLeftOpen, Calendar, MessageSquare
 } from "./icons";
 
 function activeProfileId(pathname: string): string | null {
@@ -122,6 +122,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     Promise.all([apiClient.verifySession(), apiClient.profiles()])
       .then(([session, profileList]) => {
         setRoles(session.roles);
+        if (session.roles.includes("ADMIN")) {
+          router.replace("/admin");
+          return null;
+        }
+        if (session.roles.includes("DEPARTMENT_OFFICER")) {
+          router.replace("/officer");
+          return null;
+        }
+        if (!session.roles.includes("APPLICANT")) {
+          router.replace("/login");
+          return null;
+        }
         setProfiles(profileList);
         setReady(true);
         if (profileList[0] && typeof window !== "undefined" && !localStorage.getItem("anumati_last_profile")) {
@@ -129,7 +141,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         }
         return platformClient.unreadNotifications();
       })
-      .then((count) => setNotificationCount(count))
+      .then((count) => { if (typeof count === "number") setNotificationCount(count); })
       .catch(() => router.replace("/login"));
   }, [router]);
 
@@ -140,8 +152,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       || profiles[0],
     [profiles, profileId]
   );
-  const isOfficer = roles.includes("DEPARTMENT_OFFICER") || roles.includes("ADMIN");
-  const isAdmin = roles.includes("ADMIN");
 
   if (!ready) return <div className="loading-state">Preparing workspace...</div>;
 
@@ -269,18 +279,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Bell size={18}/><span>Notifications</span>{notificationCount > 0 ? <span className="nav-count">{notificationCount}</span> : null}
           </Link>
 
-          {isOfficer ? <>
-            <div className="nav-label">Government</div>
-            <Link href="/officer" onClick={closeSidebarOnMobile} aria-current={exact("/officer") ? "page" : undefined} className={`app-nav-item ${exact("/officer") ? "active" : ""}`} title={sidebarCollapsed ? "Control tower" : undefined}><Landmark size={18}/><span>Control tower</span></Link>
-            <Link href="/officer/inspections" onClick={closeSidebarOnMobile} aria-current={starts("/officer/inspections") ? "page" : undefined} className={`app-nav-item ${starts("/officer/inspections") ? "active" : ""}`} title={sidebarCollapsed ? "Inspection planning" : undefined}><Calendar size={18}/><span>Inspection planning</span></Link>
-            <Link href="/officer/renewals" onClick={closeSidebarOnMobile} aria-current={starts("/officer/renewals") ? "page" : undefined} className={`app-nav-item ${starts("/officer/renewals") ? "active" : ""}`} title={sidebarCollapsed ? "Renewal desk" : undefined}><Clock size={18}/><span>Renewal desk</span></Link>
-            <Link href="/officer/grievances" onClick={closeSidebarOnMobile} aria-current={starts("/officer/grievances") ? "page" : undefined} className={`app-nav-item ${starts("/officer/grievances") ? "active" : ""}`} title={sidebarCollapsed ? "Grievance desk" : undefined}><MessageSquare size={18}/><span>Grievance desk</span></Link>
-          </> : null}
-
-          {isAdmin ? <>
-            <div className="nav-label">Administration</div>
-            <Link href="/admin/regulatory" onClick={closeSidebarOnMobile} aria-current={starts("/admin/regulatory") ? "page" : undefined} className={`app-nav-item ${starts("/admin/regulatory") ? "active" : ""}`} title={sidebarCollapsed ? "Regulatory catalogue" : undefined}><Database size={18}/><span>Regulatory catalogue</span></Link>
-          </> : null}
         </nav>
 
         <div className="sidebar-bottom">
@@ -304,13 +302,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {sidebarCollapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
             </button>
             {parentContext ? <Link href={parentContext.href} className="app-topbar-back"><ArrowLeft size={14}/><span>{parentContext.label}</span></Link> : null}
-            <div><span className="topbar-kicker">Anumati workspace</span><strong>{isOfficer ? "Department operations" : "Applicant operations"}</strong></div>
+            <div><span className="topbar-kicker">Applicant workspace</span><strong>Business operations</strong></div>
           </div>
           <div className="app-topbar-actions">
             <Link href="/app/notifications" className="app-nav-item topbar-notification" aria-label="Notifications"><Bell size={18}/>{notificationCount > 0 ? <span className="nav-count">{notificationCount}</span> : null}</Link>
             <div className="app-user-chip">
               <div className="app-avatar">{(currentProfile?.businessName?.[0] || "A").toUpperCase()}</div>
-              <div className="app-user-copy"><strong>{currentProfile?.businessName || "Anumati workspace"}</strong><span>{isOfficer ? "Department workspace" : "Business workspace"}</span></div>
+              <div className="app-user-copy"><strong>{currentProfile?.businessName || "Anumati workspace"}</strong><span>Applicant workspace</span></div>
             </div>
           </div>
         </header>
