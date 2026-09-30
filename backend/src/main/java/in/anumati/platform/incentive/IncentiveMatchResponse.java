@@ -1,0 +1,1 @@
+package in.anumati.platform.incentive; import java.util.*; public record IncentiveMatchResponse(UUID id,String code,String name,String authority,String benefitSummary,String applicationUrl,UUID sourceId,String sourceTitle,String sourceUrl,String reason,List<String> conditions){ }

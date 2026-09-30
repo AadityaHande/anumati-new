@@ -1,0 +1,57 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+  flyway:
+    validate-on-migrate: true
+
+server:
+  forward-headers-strategy: framework
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+        add-additional-paths: true
+      show-details: never
+      show-components: never
+
+anumati:
+  scrutiny:
+    enhanced-investment-inr: ${ANUMATI_SCRUTINY_ENHANCED_INVESTMENT_INR:1000000000}
+    enhanced-employee-threshold: ${ANUMATI_SCRUTINY_ENHANCED_EMPLOYEE_THRESHOLD:250}
+  analysis:
+    require-verified-sources: true
+  security:
+    admin-password: ${ANUMATI_ADMIN_PASSWORD}
+    applicant-password: ${ANUMATI_APPLICANT_PASSWORD}
+    officer-password: ${ANUMATI_OFFICER_PASSWORD}
+  web:
+    allowed-origins: ${ANUMATI_ALLOWED_ORIGINS}
+  session:
+    secure-cookie: true
+    lifetime-hours: ${ANUMATI_SESSION_LIFETIME_HOURS:8}
+  jobs:
+    notifications:
+      enabled: ${ANUMATI_NOTIFICATION_JOB_ENABLED:true}
+      interval-ms: ${ANUMATI_NOTIFICATION_JOB_INTERVAL_MS:900000}
+      initial-delay-ms: ${ANUMATI_NOTIFICATION_JOB_INITIAL_DELAY_MS:30000}
+  document-analysis:
+    command-timeout-seconds: ${ANUMATI_DOCUMENT_ANALYSIS_TIMEOUT_SECONDS:45}
+    max-pdf-pages: ${ANUMATI_DOCUMENT_ANALYSIS_MAX_PDF_PAGES:5}
+  storage:
+    mode: ${ANUMATI_STORAGE_MODE:s3}
+    local-root: ${ANUMATI_STORAGE_LOCAL_ROOT:}
+    local-base-url: ${ANUMATI_STORAGE_LOCAL_BASE_URL:}
+    endpoint: ${ANUMATI_STORAGE_ENDPOINT:}
+

@@ -1,0 +1,1 @@
+package in.anumati.platform.incentive; import org.springframework.data.jpa.repository.*; import java.util.*; public interface IncentiveSchemeRepository extends JpaRepository<IncentiveScheme,UUID>{@EntityGraph(attributePaths={"source"}) List<IncentiveScheme> findByActiveTrue();}

@@ -1,0 +1,1 @@
+package in.anumati.platform.incentive; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface IncentiveConditionRepository extends JpaRepository<IncentiveCondition,UUID>{List<IncentiveCondition> findByScheme_IdOrderBySequenceNumberAsc(UUID id);}

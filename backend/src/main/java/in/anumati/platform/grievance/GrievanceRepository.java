@@ -1,0 +1,1 @@
+package in.anumati.platform.grievance; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface GrievanceRepository extends JpaRepository<Grievance,UUID>{List<Grievance> findByBusinessProfile_IdOrderByCreatedAtDesc(UUID id);List<Grievance> findAllByOrderByCreatedAtDesc();long countByStatus(GrievanceStatus status);}

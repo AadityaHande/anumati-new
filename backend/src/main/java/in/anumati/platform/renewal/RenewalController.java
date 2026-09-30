@@ -1,0 +1,8 @@
+package in.anumati.platform.renewal; import org.springframework.security.access.prepost.PreAuthorize; import org.springframework.security.core.Authentication; import org.springframework.web.bind.annotation.*; import java.util.*;
+@RestController @RequestMapping("/api/v1/renewals") public class RenewalController {private final RenewalService service; public RenewalController(RenewalService s){service=s;} private boolean dept(Authentication a){return a.getAuthorities().stream().anyMatch(x->x.getAuthority().equals("ROLE_ADMIN")||x.getAuthority().equals("ROLE_DEPARTMENT_OFFICER"));}
+ @PostMapping @PreAuthorize("hasAnyRole('APPLICANT','ADMIN','DEPARTMENT_OFFICER')") public RenewalResponse create(@jakarta.validation.Valid @RequestBody RenewalRequest r,Authentication a){return service.create(r,a.getName(),dept(a));}
+ @GetMapping("/business-profiles/{businessProfileId}") @PreAuthorize("hasRole('APPLICANT')") public List<RenewalResponse> business(@PathVariable UUID businessProfileId,Authentication a){return service.forBusiness(businessProfileId,a.getName());}
+ @GetMapping @PreAuthorize("hasAnyRole('ADMIN','DEPARTMENT_OFFICER')") public List<RenewalResponse> all(){return service.all();}
+ @PostMapping("/{id}/start") @PreAuthorize("hasAnyRole('APPLICANT','ADMIN','DEPARTMENT_OFFICER')") public RenewalResponse start(@PathVariable UUID id,Authentication a){return service.start(id,a.getName(),dept(a));}
+ @PostMapping("/{id}/complete") @PreAuthorize("hasAnyRole('ADMIN','DEPARTMENT_OFFICER')") public RenewalResponse complete(@PathVariable UUID id,Authentication a){return service.complete(id,a.getName(),true);}
+}

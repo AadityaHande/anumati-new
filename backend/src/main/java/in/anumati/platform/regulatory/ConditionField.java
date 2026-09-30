@@ -1,0 +1,5 @@
+package in.anumati.platform.regulatory;
+
+public enum ConditionField {
+    SECTOR, ACTIVITY, DISTRICT, MIDC_UNIT, INVESTMENT_INR, EMPLOYEES, POWER_USAGE_KW, BUSINESS_STAGE, REGULATORY_ATTRIBUTE
+}

@@ -1,0 +1,4 @@
+-- Reserved migration boundary. Future releases will add:
+-- documents, approval dependencies, applications, queries/deficiencies,
+-- inspections, incentives, renewals, grievances, notifications and integrations.
+-- No fabricated regulatory data is inserted in this release.

@@ -1,0 +1,108 @@
+spring:
+  application:
+    name: anumati-backend
+  profiles:
+    default: local
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/anumati}
+    username: ${DATABASE_USERNAME:anumati}
+    password: ${DATABASE_PASSWORD:anumati-local}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{requestId:-}]"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+        add-additional-paths: true
+      show-details: never
+      show-components: never
+  info:
+    env:
+      enabled: false
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    csrf:
+      enabled: true
+    with-credentials: true
+  packages-to-scan: in.anumati.platform
+  paths-to-match: /api/**
+
+anumati:
+  scrutiny:
+    enhanced-investment-inr: ${ANUMATI_SCRUTINY_ENHANCED_INVESTMENT_INR:1000000000}
+    enhanced-employee-threshold: ${ANUMATI_SCRUTINY_ENHANCED_EMPLOYEE_THRESHOLD:250}
+  analysis:
+    require-verified-sources: ${REQUIRE_VERIFIED_SOURCES:true}
+  security:
+    admin-username: ${ANUMATI_ADMIN_USERNAME:admin}
+    admin-password: ${ANUMATI_ADMIN_PASSWORD:change-me}
+    applicant-username: ${ANUMATI_APPLICANT_USERNAME:applicant}
+    applicant-password: ${ANUMATI_APPLICANT_PASSWORD:change-me}
+    officer-username: ${ANUMATI_OFFICER_USERNAME:officer}
+    officer-password: ${ANUMATI_OFFICER_PASSWORD:change-me}
+  web:
+    allowed-origins: ${ANUMATI_ALLOWED_ORIGINS:http://localhost:3000}
+  session:
+    cookie-name: ${ANUMATI_SESSION_COOKIE_NAME:ANUMATI_SESSION}
+    lifetime-hours: ${ANUMATI_SESSION_LIFETIME_HOURS:8}
+    secure-cookie: ${ANUMATI_SESSION_SECURE_COOKIE:false}
+    cookie-domain: ${ANUMATI_SESSION_COOKIE_DOMAIN:}
+  jobs:
+    notifications:
+      enabled: ${ANUMATI_NOTIFICATION_JOB_ENABLED:true}
+      interval-ms: ${ANUMATI_NOTIFICATION_JOB_INTERVAL_MS:900000}
+      initial-delay-ms: ${ANUMATI_NOTIFICATION_JOB_INITIAL_DELAY_MS:30000}
+  document-analysis:
+    command-timeout-seconds: ${ANUMATI_DOCUMENT_ANALYSIS_TIMEOUT_SECONDS:45}
+    max-pdf-pages: ${ANUMATI_DOCUMENT_ANALYSIS_MAX_PDF_PAGES:5}
+  storage:
+    mode: ${ANUMATI_STORAGE_MODE:local}
+    local-root: ${ANUMATI_STORAGE_LOCAL_ROOT:${java.io.tmpdir}/anumati-storage}
+    local-base-url: ${ANUMATI_STORAGE_LOCAL_BASE_URL:http://localhost:8080}
+    bucket: ${ANUMATI_STORAGE_BUCKET:anumati-documents}
+    region: ${ANUMATI_STORAGE_REGION:ap-south-1}
+    endpoint: ${ANUMATI_STORAGE_ENDPOINT:}
+    access-key: ${ANUMATI_STORAGE_ACCESS_KEY:}
+    secret-key: ${ANUMATI_STORAGE_SECRET_KEY:}
+    presign-minutes: ${ANUMATI_STORAGE_PRESIGN_MINUTES:10}
+    max-file-bytes: ${ANUMATI_STORAGE_MAX_FILE_BYTES:10485760}
+    auto-create-bucket: ${ANUMATI_STORAGE_AUTO_CREATE_BUCKET:false}
+
+

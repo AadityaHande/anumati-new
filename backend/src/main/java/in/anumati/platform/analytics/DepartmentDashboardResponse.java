@@ -1,0 +1,1 @@
+package in.anumati.platform.analytics; import java.util.*; public record DepartmentDashboardResponse(long totalApplications,long pendingScrutiny,long queriesAwaitingApplicant,long slaAtRisk,long overdue,long inspectionsPending,long approved,long rejected,long openGrievances,long complianceDue,Map<String,Long> byStatus,Map<String,Long> byDepartment){ }
